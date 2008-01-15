@@ -12,7 +12,7 @@ if (!$_COOKIE['pcid'] {
 	print "First off, I need to know which character you are playing in today.<br>\n";
 	print "Please select your PC:<br>\n";
 	print "<form action=\"pcsettings.php\" method=\"post\">\n";
-	$getpcnames = $mysqli->query("SELECT pcid,name FROM players WHERE player=
+	$getpcnames = $mysqli->query("SELECT pcid,name FROM players WHERE player=?
 
 
 
