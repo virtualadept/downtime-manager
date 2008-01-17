@@ -5,6 +5,14 @@ $mode = $mysqli->real_escape_string($_POST['mode']);
 $pcid = $mysqli->real_escape_string($_POST['pcid']);
 //$username = $mysqli->real_escape_string($_POST['username']);
 
+if ($mode == 'setcookie') {
+	createpcidcookie($pcid);
+}
+
+if ($_COOKIE['pcid'] && $username) {
+	checkpcidcookie(($_COOKIE['pcid']),$username);
+}
+
 switch ($mode) {
 default:
 	print "Hello $username to the Downtime Manager!<br><br><br>\n";
@@ -33,11 +41,11 @@ default:
 		}			
 		print "<option value=\"createnew\">Create New PC</option>\n";
 		print "</select>\n";
- 		print "<input type=\"mode\" value=\"setcookie\">\n";
+ 		print "<input type=\"hidden\" name=\"mode\" value=\"setcookie\">\n";
  		print "<input type=\"submit\" value=\"Select PC\">\n";
  	}
 	if ($_COOKIE['pcid'] ) {
-		print "Ah, you are here for $pcid\n";
+		print "Ah, you are here for " . $_COOKIE['pcid'];
 	}
 	break;
 
@@ -69,8 +77,8 @@ function checkpcidcookie($pcid,$username) {
 		$getuserid->bind_result($userid);
 		$getuserid->fetch();
 		// Use that userid to find out what characters they are playing
-		$getpcid = $mysqli->prepare("SELECT pcid,name FROM players WHERE userid=? AND pcid=\"$pcid\"");
-		$getpcid->bind_param('i',$userid);
+		$getpcid = $mysqli->prepare("SELECT name FROM players WHERE userid=? AND pcid=?");
+		$getpcid->bind_param('ii',$userid,$pcid);
 		$getpcid->execute();
 		if (!$getpcid) {
 			print "Forgery of cookie!<br>\n";
@@ -78,5 +86,6 @@ function checkpcidcookie($pcid,$username) {
 			return;
 		}
 
+	}
 }
 ?>
