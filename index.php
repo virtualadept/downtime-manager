@@ -51,18 +51,34 @@ default:
 	}
 	
 	if ($_COOKIE['pcid'] && !$_COOKIE['gameid']) {
+		print "You have not chosen a game yet! Lets fix that:\n";
+
 	}
 	
 	
 	break;
 
-case setcookie:
-	createpcidcookie($pcid);
-	break;
+}
 
-case delcookie:
-	deletepcidcookie($pcid);
-	break;
+function getuseridfromusername($username) {
+	$getuserid = $authmysqli->prepare("SELECT userid FROM users WHERE username=?");
+	$getuserid->bind_param('s',$username);
+	$getuserid->execute();
+	if ($getuserid) {
+		$getuserid->bind_result($userid);
+		$getuserid->fetch();
+		return $userid;
+	}
+}
+
+function getplayerinfofrompcid($pcid,$userid) {
+	$getplayerinfo = $mysqli->prepare("SELECT * FROM players WHERE pcid=? AND userid=?");
+	$getplayerinfo->bind_param('ii',$pcid,$userid);
+	$getplayerinfo->execute();
+	if ($getplayerinfo) {
+		// fetch it into assoc array
+		return $something;
+	}
 }
 
 
