@@ -6,8 +6,8 @@ $pcid = $mysqli->real_escape_string($_POST['pcid']);
 $cookie = $mysqli->real_escape_string($_POST['cookie']);
 //$username = $mysqli->real_escape_string($_POST['username']);
 
-if ($cookie == 'set') {
-	setpcidcookie($pcid);
+if ($cookie == 'set' && $pcid) {
+	scookie('pcid',$pcid);
 }
 print "Hello $username to the Downtime Manager!<br><br><br>\n";
 
@@ -77,21 +77,13 @@ function getplayerinfofrompcid($pcid,$userid) {
 }
 
 
-function createpcidcookie($pcid) {
-	setcookie("pcid","$pcid",mktime()+86400,"/") or die("Could not set cookie");
-	if ($_COOKIE['pcid']) {
-		print "Cookie set!";
-		return;
-	}
+function scookie($name,$pcid) {
+	setcookie("$name","$pcid",mktime()+86400,"/") or die("Could not set cookie");
 }
 
 
-function deletepcidcookie($pcid) {
+function dcookie($pcid) {
 	setcookie("pcid","$pcid",mktime()-86400,"/") or die("Could not delete cookie");
-	if (!$_COOKIE['pcid']) {
-		print "Cookie deleted!";
-		return;
-	}
 }
 
 ?>
