@@ -3,18 +3,14 @@ include "db.php";
 
 $mode = $mysqli->real_escape_string($_POST['mode']);
 $pcid = $mysqli->real_escape_string($_POST['pcid']);
+$cookie = $mysqli->real_escape_string($_POST['cookie']);
 //$username = $mysqli->real_escape_string($_POST['username']);
-
-if ($mode == 'setcookie') {
-	createpcidcookie($pcid);
-}
-
-if ($_COOKIE['pcid'] && $username) {
-	checkpcidcookie(($_COOKIE['pcid']),$username);
-}
 
 switch ($mode) {
 default:
+	if ($cookie == 'set') {
+		setpcidcookie($pcid);
+	}
 	print "Hello $username to the Downtime Manager!<br><br><br>\n";
 	// If they dont have a cookie set, ask them which character they want.
 	if (!$_COOKIE['pcid']) {
@@ -41,14 +37,32 @@ default:
 		}			
 		print "<option value=\"createnew\">Create New PC</option>\n";
 		print "</select>\n";
- 		print "<input type=\"hidden\" name=\"mode\" value=\"setcookie\">\n";
+ 		print "<input type=\"hidden\" name=\"cookie\" value=\"set\">\n";
  		print "<input type=\"submit\" value=\"Select PC\">\n";
  	}
 	if ($_COOKIE['pcid'] ) {
-		print "Ah, you are here for " . $_COOKIE['pcid'];
+		$cookiepcid = $_COOKIE['pcid'];
+		$getplayername = $mysqli->prepare("SELECT name FROM players WHERE pcid=?");
+		$getplayername->bind_param('i',$cookiepcid);
+		$getplayername->execute();
+		$getplayername->bind_result($playername);
+		$getplayername->fetch();
+		print "Ah, You are here for $playername, excellent!<br>\n";
 	}
+	
+	if ($_COOKIE['pcid'] && !$_COOKIE['gameid']) {
+	}
+	
+	
 	break;
 
+case setcookie:
+	createpcidcookie($pcid);
+	break;
+
+case delcookie:
+	deletepcidcookie($pcid);
+	break;
 }
 
 
@@ -69,23 +83,4 @@ function deletepcidcookie($pcid) {
 	}
 }
 
-function checkpcidcookie($pcid,$username) {
-	$getuserid = $authmysqli->prepare("SELECT userid FROM users WHERE username=?");
-	$getuserid->bind_param('s',$username);
-	$getuserid->execute();
-	if ($getuserid) {
-		$getuserid->bind_result($userid);
-		$getuserid->fetch();
-		// Use that userid to find out what characters they are playing
-		$getpcid = $mysqli->prepare("SELECT name FROM players WHERE userid=? AND pcid=?");
-		$getpcid->bind_param('ii',$userid,$pcid);
-		$getpcid->execute();
-		if (!$getpcid) {
-			print "Forgery of cookie!<br>\n";
-			deletepcidcookie($pcid);
-			return;
-		}
-
-	}
-}
 ?>
