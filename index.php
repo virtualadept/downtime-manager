@@ -47,7 +47,7 @@ if (!$_COOKIE['pcid']) {
 if ($_COOKIE['pcid'] ) {
 	$cookiepcid = $_COOKIE['pcid'];
 	$pcid = getuseridfromusername($username);
-	$pinfo = getplayerinfofrompcid($cookiepcid,$username);
+	$pinfo = getplayerinfofrompcid($cookiepcid,$pcid);
 //	$getplayername = $mysqli->prepare("SELECT name FROM players WHERE pcid=?");
 //	$getplayername->bind_param('i',$cookiepcid);
 //	$getplayername->execute();
@@ -60,6 +60,10 @@ if ($_COOKIE['pcid'] && !$_COOKIE['gameid']) {
 	print "You have not chosen a game yet! Lets fix that:\n";
 }
 	
+
+
+
+// Subroutines/Functions/Whatever they are called now
 
 function getuseridfromusername($username) {
 	$getuserid = $authmysqli->prepare("SELECT userid FROM users WHERE username=?");
@@ -77,7 +81,7 @@ function getplayerinfofrompcid($pcid,$userid) {
 	$getplayerinfo->bind_param('ii',$pcid,$userid);
 	$getplayerinfo->execute();
 	if ($getplayerinfo) {
-		$playerinfo =  $getplayerinfo->fetch_array(MYSQLI_ASSOC);
+		$playerinfo =  $getplayerinfo->fetch_assoc();
 		return $playerinfo;
 	}
 }
