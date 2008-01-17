@@ -5,6 +5,7 @@ if (!$_COOKIE['st']) {
 	print "You dont seem to have a game you ST set.<br>\n";
 }
 
+// TODO
 // Get userid from username
 // Get list of games that userid ST's
 // Print list

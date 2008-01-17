@@ -60,7 +60,10 @@ if ($_COOKIE['pcid'] && !$_COOKIE['gameid']) {
 	print "You have not chosen a game yet! Lets fix that:\n";
 }
 	
-
+/* TODO
+* Find games players are in and set cookie
+* Show summary of downtime logs open and closed in nice chart
+*/
 
 
 // Subroutines/Functions/Whatever they are called now
