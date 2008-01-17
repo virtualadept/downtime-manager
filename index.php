@@ -17,12 +17,14 @@ if (!$_COOKIE['pcid']) {
 	print "<form action=\"index.php\" method=\"post\">\n";
 	print "<select name=\"pcid\">\n";
 	// Pull the userid of the logged in user from the apacheauth db.
-	$getuserid = $authmysqli->prepare("SELECT userid FROM users WHERE username=?");
-	$getuserid->bind_param('s',$username);
-	$getuserid->execute();
-	if ($getuserid) {
-		$getuserid->bind_result($userid);
-		$getuserid->fetch();
+//	$getuserid = $authmysqli->prepare("SELECT userid FROM users WHERE username=?");
+//	$getuserid->bind_param('s',$username);
+//	$getuserid->execute();
+//	if ($getuserid) {
+//		$getuserid->bind_result($userid);
+//		$getuserid->fetch();
+	$userid = getuseridfromusername($username);	
+	if ($userid) {
 		// Use that userid to find out what characters they are playing
 		$getpcid = $mysqli->prepare("SELECT pcid,name FROM players WHERE userid=?");
 		$getpcid->bind_param('i',$userid);
@@ -40,14 +42,18 @@ if (!$_COOKIE['pcid']) {
 		print "<input type=\"submit\" value=\"Select PC\">\n";
 	}
 
+// If we have a cookie with the user's pcid, lets fetch all we can for later scripts
+
 if ($_COOKIE['pcid'] ) {
 	$cookiepcid = $_COOKIE['pcid'];
-	$getplayername = $mysqli->prepare("SELECT name FROM players WHERE pcid=?");
-	$getplayername->bind_param('i',$cookiepcid);
-	$getplayername->execute();
-	$getplayername->bind_result($playername);
-	$getplayername->fetch();
-	print "Ah, You are here for $playername, excellent!<br>\n";
+	$pcid = getuseridfromusername($username);
+	$pinfo = getplayerinfofrompcid($cookiepcid,$username);
+//	$getplayername = $mysqli->prepare("SELECT name FROM players WHERE pcid=?");
+//	$getplayername->bind_param('i',$cookiepcid);
+//	$getplayername->execute();
+//	$getplayername->bind_result($playername);
+//	$getplayername->fetch();
+	print "Ah, You are here for $pinfo["name"], excellent!<br>\n";
 }
 	
 if ($_COOKIE['pcid'] && !$_COOKIE['gameid']) {
@@ -71,8 +77,8 @@ function getplayerinfofrompcid($pcid,$userid) {
 	$getplayerinfo->bind_param('ii',$pcid,$userid);
 	$getplayerinfo->execute();
 	if ($getplayerinfo) {
-		// fetch it into assoc array
-		return $something;
+		$playerinfo =  $getplayerinfo->fetch_array(MYSQLI_ASSOC);
+		return $playerinfo;
 	}
 }
 
