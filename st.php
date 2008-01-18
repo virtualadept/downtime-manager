@@ -1,9 +1,11 @@
 <?
-include "db.php";
+include "include.php";
 
 if (!$_COOKIE['st']) {
 	print "You dont seem to have a game you ST set.<br>\n";
 }
+
+
 
 // TODO
 // Get userid from username
