@@ -47,15 +47,12 @@ if ($_COOKIE['st']) {
 		// Check to see if their cookie is legit
 		$userid = getuseridfromusername($authmysqli,$username);
 		$cookiegameid = $_COOKIE['st'];
-		if ($checkstcookie = $mysqli->prepare("SELECT name FROM games WHERE gameid=? AND stuserid=?") {
-			$checkstcookie->bind_param('ii',$cookiegameid,$userid);
-			$checkstcookie->execute();
-			$checkstcookie->bind_result($gamename);
-			if (!$gamename) {
-				print "Warning! Some cookie douchebaggery is going on here!<br>\n";
-				exit;
-			}
+		$gameinfo = getgameinfofrom gameid($mysqli,$cookiegameid,$userid);
+		if (!$gameinfo) {
+			print "Warning! Some cookie douchebaggery is going on here!<br>\n";
+			exit;
 		}
+	}
 
 
 
