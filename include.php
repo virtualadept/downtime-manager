@@ -19,6 +19,13 @@ function getplayerinfofrompcid($dbh,$pcid,$userid) {
 	}
 }
 
+function getgameinfofromgameid($dbh,$gameid,$stuserid) {
+	if ($getgameinfo = $dbh->query("SELECT * FROM games WHERE gameid=\"$gameid\" AND stuserid=\"$stuserid\"")) {
+		$gameinfo = $getgameinfo->fetch_assoc();
+		return $gameinfo;
+	}
+}
+
 
 function scookie($name,$pcid) {
 	setcookie("$name","$pcid",mktime()+86400,"/") or die("Could not set cookie");
