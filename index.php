@@ -23,7 +23,7 @@ if (!$_COOKIE['pcid']) {
 //	if ($getuserid) {
 //		$getuserid->bind_result($userid);
 //		$getuserid->fetch();
-	$userid = getuseridfromusername($username);	
+	$userid = getuseridfromusername($authmysqli,$username);	
 	if ($userid) {
 		// Use that userid to find out what characters they are playing
 		$getpcid = $mysqli->prepare("SELECT pcid,name FROM players WHERE userid=?");
@@ -46,14 +46,14 @@ if (!$_COOKIE['pcid']) {
 
 if ($_COOKIE['pcid'] ) {
 	$cookiepcid = $_COOKIE['pcid'];
-	$pcid = getuseridfromusername($username);
-	$pinfo = getplayerinfofrompcid($cookiepcid,$pcid);
+	$userid = getuseridfromusername($authmysqli,$username);
+	$pinfo = getplayerinfofrompcid($mysqli,$cookiepcid,$userid);
 //	$getplayername = $mysqli->prepare("SELECT name FROM players WHERE pcid=?");
 //	$getplayername->bind_param('i',$cookiepcid);
 //	$getplayername->execute();
 //	$getplayername->bind_result($playername);
 //	$getplayername->fetch();
-	print "Ah, You are here for $pinfo["name"], excellent!<br>\n";
+	print "Ah, You are here for ". $pinfo["name"] . ", excellent!<br>\n";
 }
 	
 if ($_COOKIE['pcid'] && !$_COOKIE['gameid']) {
@@ -68,23 +68,19 @@ if ($_COOKIE['pcid'] && !$_COOKIE['gameid']) {
 
 // Subroutines/Functions/Whatever they are called now
 
-function getuseridfromusername($username) {
-	$getuserid = $authmysqli->prepare("SELECT userid FROM users WHERE username=?");
-	$getuserid->bind_param('s',$username);
-	$getuserid->execute();
-	if ($getuserid) {
+function getuseridfromusername($dbh,$username) {
+	if ($getuserid = $dbh->prepare("SELECT userid FROM users WHERE username=?")) {
+		$getuserid->bind_param('s',$username);
+		$getuserid->execute();
 		$getuserid->bind_result($userid);
 		$getuserid->fetch();
 		return $userid;
 	}
 }
 
-function getplayerinfofrompcid($pcid,$userid) {
-	$getplayerinfo = $mysqli->prepare("SELECT * FROM players WHERE pcid=? AND userid=?");
-	$getplayerinfo->bind_param('ii',$pcid,$userid);
-	$getplayerinfo->execute();
-	if ($getplayerinfo) {
-		$playerinfo =  $getplayerinfo->fetch_assoc();
+function getplayerinfofrompcid($dbh,$pcid,$userid) {
+	if ($getplayerinfo = $dbh->query("SELECT * FROM players WHERE pcid=\"$pcid\" AND userid=\"$userid\"")) {
+		$playerinfo = $getplayerinfo->fetch_assoc();
 		return $playerinfo;
 	}
 }
@@ -95,8 +91,8 @@ function scookie($name,$pcid) {
 }
 
 
-function dcookie($pcid) {
-	setcookie("pcid","$pcid",mktime()-86400,"/") or die("Could not delete cookie");
+function dcookie($name,$pcid) {
+	setcookie("$name","$pcid",mktime()-86400,"/") or die("Could not delete cookie");
 }
 
 ?>
