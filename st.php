@@ -35,9 +35,23 @@ if ($_COOKIE['st']) {
 	$gameinfo = getgameinfofromgameid($mysqli,$cookiegameid,$userid);
 	print "You are the ST for " . $gameinfo["name"] . "<br>\n";
 	print "Please select which people are a part of your game:<br>\n";
+	// User list.  First we'll nab from the DB all of the people who are in the game
+	if ($getactive = $mysqli->prepare("SELECT id FROM access WHERE gameid=? AND id=\"U\"")) {
+		$getactive->bind_param('i',$cookiegameid);
+		$getactive->execute();
+		$getactive->bind_result($activeuser);
+		while ($getactive->fetch()) {
+			$activehash["$activeuser"] = 1;
+		}
+	}
 	if ($getuserslist = $authmysqli->query("SELECT userid,username FROM users ORDER BY username ASC")) {
 		while ($users = $getuserslist->fetch_assoc()) {
-			print "<input type=\"checkbox\" name=\"userlists[]\" value=\"".$users['userid']."\">".$users['username']."<br>\n";
+			$out = "<input type=\"checkbox\" name=\"userlists[]\" value=\"".$users['userid']."\"";
+			if (exists($activehash[$users['userid'])) {
+				$out =. " checked ";
+			}
+			$out =. ">".$users['username']."<br>";"
+			print "$out\n";
 		}
 	print "<input type=\"hidden\" name=\"mode\" value=\"userset\">\n";
 	print "<input type=\"submit\" value=\"Go\">\n";
