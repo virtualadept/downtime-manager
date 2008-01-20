@@ -58,7 +58,7 @@ if ($_COOKIE['st']) {
 	}
 
 
-	print "You are the ST for " . $gameinfo["name"] . "<br>\n";
+	print "You are the ST for <u>" . $gameinfo["name"] . "</u><br><br>\n";
 	print "Please select which people are a part of your game:<br>\n";
 	print "<form action=\"st.php\" method=\"post\">\n";
 	// User list.  First we'll nab from the DB all of the people who are in the game
@@ -76,7 +76,7 @@ if ($_COOKIE['st']) {
 			if (isset($activehash[$users['userid']])) {
 				$out .= " checked ";
 			}
-			$out .= ">".$users['username']."<br>";
+			$out .= "> ".titleCase($users['username'])."<br>";
 			print "$out\n";
 		}
 	print "<input type=\"hidden\" name=\"mode\" value=\"userset\">\n";

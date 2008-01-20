@@ -2,6 +2,10 @@
 
 include "db.php";
 
+function titleCase($string) {
+	return ucwords(strtolower($string));
+}
+
 function getuseridfromusername($dbh,$username) {
 	if ($getuserid = $dbh->prepare("SELECT userid FROM users WHERE username=?")) {
 		$getuserid->bind_param('s',$username);
