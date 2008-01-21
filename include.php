@@ -29,6 +29,10 @@ function getgameinfofromgameid($dbh,$gameid,$stuserid) {
 		return $gameinfo;
 	}
 }
+/*
+function getgameaccessfromuserid($dbh,$userid) {
+	if ($getgameaccess = $dbh->query("SELECT games.name from games,access WHERE type='U' AND 
+*/
 
 
 function scookie($name,$pcid) {
