@@ -16,13 +16,6 @@ if (!$_COOKIE['pcid']) {
 	print "Ah, I see that you have not picked your character.  Lets fix that.<br>\n";
 	print "<form action=\"index.php\" method=\"post\">\n";
 	print "<select name=\"pcid\">\n";
-	// Pull the userid of the logged in user from the apacheauth db.
-//	$getuserid = $authmysqli->prepare("SELECT userid FROM users WHERE username=?");
-//	$getuserid->bind_param('s',$username);
-//	$getuserid->execute();
-//	if ($getuserid) {
-//		$getuserid->bind_result($userid);
-//		$getuserid->fetch();
 	$userid = getuseridfromusername($authmysqli,$username);	
 	if ($userid) {
 		// Use that userid to find out what characters they are playing
@@ -48,11 +41,6 @@ if ($_COOKIE['pcid'] ) {
 	$cookiepcid = $_COOKIE['pcid'];
 	$userid = getuseridfromusername($authmysqli,$username);
 	$pinfo = getplayerinfofrompcid($mysqli,$cookiepcid,$userid);
-//	$getplayername = $mysqli->prepare("SELECT name FROM players WHERE pcid=?");
-//	$getplayername->bind_param('i',$cookiepcid);
-//	$getplayername->execute();
-//	$getplayername->bind_result($playername);
-//	$getplayername->fetch();
 	print "Ah, You are here for ". $pinfo["name"] . ", excellent!<br>\n";
 }
 	
