@@ -1,10 +1,10 @@
 <?
 include "include.php";
 
-$mode = $mysqli->real_escape_string($_POST['mode']);
-$pcid = $mysqli->real_escape_string($_POST['pcid']);
-$cookie = $mysqli->real_escape_string($_POST['cookie']);
-//$username = $mysqli->real_escape_string($_POST['username']);
+$mode = $mysqli->real_escape_string($_GET['mode']);
+$pcid = $mysqli->real_escape_string($_GET['pcid']);
+$cookie = $mysqli->real_escape_string($_GET['cookie']);
+//$username = $mysqli->real_escape_string($_GET['username']);
 
 if ($cookie == 'set' && $pcid) {
 	scookie('pcid',$pcid);
@@ -14,7 +14,7 @@ print "Hello $username to the Downtime Manager!<br><br><br>\n";
 // If they dont have a cookie set, ask them which character they want.
 if (!$_COOKIE['pcid']) {
 	print "Ah, I see that you have not picked your character.  Lets fix that.<br>\n";
-	print "<form action=\"index.php\" method=\"post\">\n";
+	print "<form action=\"index.php\" method=\"get\">\n";
 	print "<select name=\"pcid\">\n";
 	$userid = getuseridfromusername($authmysqli,$username);	
 	if ($userid) {
