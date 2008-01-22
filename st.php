@@ -15,8 +15,8 @@ if (!$gmode && !$pmode) {
 	print "Welcome to the ST Arena $username!<br>\n";
 	print "Please choose from the following options:<br><br>\n";
 	if ($_COOKIE['st']) {
-	
-	print "<li><a href=\"st.php?gmode=useredit\">User Editor</a><br>\n";
+		print "<li><a href=\"st.php?gmode=useredit\">User Editor</a><br>\n";
+	}
 }
 
 if (!$_COOKIE['st']) {
