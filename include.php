@@ -6,6 +6,13 @@ function titleCase($string) {
 	return ucwords(strtolower($string));
 }
 
+function getdtmeta($dbh,$pcid,$gameid) {
+	if ($getdtmeta = $dbh->query("SELECT * FROM dtmeta WHERE pcid=\"$pcid\" AND gameid=\"$gameid\"")) {
+		$dtmeta = $getdtmeta->fetch_assoc();
+		return $dtmeta;
+	}
+}	
+
 function getuseridfromusername($dbh,$username) {
 	if ($getuserid = $dbh->prepare("SELECT userid FROM users WHERE username=?")) {
 		$getuserid->bind_param('s',$username);
@@ -29,11 +36,6 @@ function getgameinfofromgameid($dbh,$gameid,$stuserid) {
 		return $gameinfo;
 	}
 }
-/*
-function getgameaccessfromuserid($dbh,$userid) {
-	if ($getgameaccess = $dbh->query("SELECT games.name from games,access WHERE type='U' AND 
-*/
-
 
 function scookie($name,$pcid) {
 	setcookie("$name","$pcid",mktime()+86400,"/") or die("Could not set cookie");
