@@ -45,7 +45,15 @@ if ($_COOKIE['pcid'] ) {
 }
 	
 if ($_COOKIE['pcid'] && !$_COOKIE['gameid']) {
-	print "You have not chosen a game yet! Lets fix that:\n";
+	print "You have not chosen a game yet! Lets fix that:<br>\n";
+	if ($getgameaccessname = $mysqli->prepare("SELECT games,gameid,games.name FROM games,access WHERE id=? AND type='U' AND games.gameid=access.gameid")) {
+		$getgameaccessname->bind_param('i',$userid);
+		$getgameaccessname->execute();
+		$getgameaccessname->bind_result($allowedgameid,$allowedgamename);
+		while ($getgameaccessname->fetch()) {
+			print "<option value=\"$allowedgameid\">$allowgamename</option><br>\n";
+		}
+	}
 }
 	
 /* TODO
