@@ -3,19 +3,23 @@ include "include.php";
 
 $gameid = $mysqli->real_escape_string($_GET['gameid']);
 $cookie = $mysqli->real_escape_string($_GET['cookie']);
-$gmode = $mysqli->real_escape_string($_GET['gmode']);
-$pmode = $mysqli->real_escape_string($_POST['pmode']);
-$userslist = ($_POST['userslist']);
+$mode = $mysqli->real_escape_string($_GET['mode']);
+$action = $mysqli->real_escape_string($_GET['action']);
+$userslist = ($_GET['userslist']);
 
 if ($cookie == "set" && $gameid) {
 	scookie("st","$gameid");
 }
 
-if (!$gmode && !$pmode) {
+if (!$mode) {
 	print "Welcome to the ST Arena $username!<br>\n";
-	print "Please choose from the following options:<br><br>\n";
 	if ($_COOKIE['st']) {
-		print "<li><a href=\"st.php?gmode=useredit\">User Editor</a><br>\n";
+	        $cookiegameid = $_COOKIE['st'];
+		$userid = getuseridfromusername($authmysqli,$username);
+		$gameinfo = getgameinfofromgameid($mysqli,$cookiegameid,$userid);
+		print "You are managing<u> ".$gameinfo['name']."</u><br>\n";
+		print "Please choose from the following options:<br>\n";
+		print "<li><a href=\"st.php?mode=useredit\">User Editor</a><br>\n";
 	}
 }
 
@@ -39,13 +43,13 @@ if (!$_COOKIE['st']) {
 	}
 }
 
-if ($_COOKIE['st'] && $gmode == "useredit") {
+if ($_COOKIE['st'] && $mode == "useredit") {
 	$cookiegameid = $_COOKIE['st'];
 	$userid = getuseridfromusername($authmysqli,$username);
 	$gameinfo = getgameinfofromgameid($mysqli,$cookiegameid,$userid);
 
-
-	if ($pmode == "userset" && $userslist) {
+	// We do all the actual work before the list so the status is shown at the top of the list.
+	if ($action == "userset" && $userslist) {
 		// Check to see if their cookie is legit
 		$userid = getuseridfromusername($authmysqli,$username);
 		$cookiegameid = $_COOKIE['st'];
@@ -66,11 +70,10 @@ if ($_COOKIE['st'] && $gmode == "useredit") {
 		}
 	}
 
-
+	// Userlist Stuff
 	print "You are editing the user list for <u>" . $gameinfo["name"] . "</u><br><br>\n";
 	print "Please select which people are a part of your game:<br>\n";
-	print "<form action=\"st.php\" method=\"post\">\n";
-	// User list.  First we'll nab from the DB all of the people who are in the game
+	print "<form action=\"st.php\" method=\"get\">\n";
 	if ($getactive = $mysqli->prepare("SELECT id FROM access WHERE gameid=? AND type=\"U\"")) {
 		$getactive->bind_param('i',$cookiegameid);
 		$getactive->execute();
@@ -88,8 +91,8 @@ if ($_COOKIE['st'] && $gmode == "useredit") {
 			$out .= "> ".titleCase($users['username'])."<br>";
 			print "$out\n";
 		}
-	print "<input type=\"hidden\" name=\"pmode\" value=\"userset\">\n";
-	print "<input type=\"hidden\" name=\"gmode\" value=\"useredit\">\n";
+	print "<input type=\"hidden\" name=\"action\" value=\"userset\">\n";
+	print "<input type=\"hidden\" name=\"mode\" value=\"useredit\">\n";
 	print "<input type=\"submit\" value=\"Go\">\n";
 	}
 
