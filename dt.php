@@ -19,12 +19,11 @@ if ($_COOKIE['pcid'] && $_COOKIE['gameid']) {
 	exit;
 }
 
-if ($getopendt = $mysqli->query("SELECT dtid,createdate,name FROM dtmeta,games WHERE pcid=\"$pcid\" AND dtmeta.gameid=\"$gameid\" AND dtmeta.status=\"O\" AND games.gameid = dtmeta.gameid SORT BY createdate ASC LIMIT 10");
-	print "These are the latest 10 open downtimes that you own<br>\n"
+if ($getopendt = $mysqli->query("SELECT dtid,createdate,name FROM dtmeta,games WHERE pcid=\"$pcid\" AND dtmeta.gameid=\"$gameid\" AND dtmeta.status=\"O\" AND games.gameid = dtmeta.gameid SORT BY createdate ASC LIMIT 10"));
+	print "These are the latest 10 open downtimes that you own<br>\n";
 	while($opendt = $getopendt->fetch_array()) {
-		print "id: $opendt['dtid'] - $opendt['name'] opened $opendt['createdate']<br>\n";
+		print "id:" . $opendt['dtid'] . " - " . $opendt['name'] . "opened" . $opendt['createdate'] . "<br>\n";
 	}
-}
 
 // Create a new downtime
 if (!$dtid && $mode == 'create') {
