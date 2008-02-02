@@ -3,12 +3,18 @@ include "include.php";
 
 $mode = $mysqli->real_escape_string($_GET['mode']);
 $pcid = $mysqli->real_escape_string($_GET['pcid']);
+$gameid = $mysqli->real_escape_string($_GET['gameid']);
 $cookie = $mysqli->real_escape_string($_GET['cookie']);
 //$username = $mysqli->real_escape_string($_GET['username']);
 
 if ($cookie == 'set' && $pcid) {
 	scookie('pcid',$pcid);
 }
+
+if ($cookie == 'set' && $gameid) {
+	scookie('pcid',$gameid);
+}
+
 print "Hello $username to the Downtime Manager!<br><br><br>\n";
 
 // If they dont have a cookie set, ask them which character they want.
@@ -46,13 +52,18 @@ if ($_COOKIE['pcid'] ) {
 	
 if ($_COOKIE['pcid'] && !$_COOKIE['gameid']) {
 	print "You have not chosen a game yet! Lets fix that:<br>\n";
-	if ($getgameaccessname = $mysqli->prepare("SELECT games,gameid,games.name FROM games,access WHERE id=? AND type='U' AND games.gameid=access.gameid")) {
+	if ($getgameaccessname = $mysqli->prepare("SELECT games.gameid,games.name FROM games,access WHERE access.id=? AND access.type='U' AND games.gameid=access.gameid")) {
 		$getgameaccessname->bind_param('i',$userid);
 		$getgameaccessname->execute();
 		$getgameaccessname->bind_result($allowedgameid,$allowedgamename);
+		print "<form action=\"index.php\" method=\"get\">\n";
+		print "<select name=\"gameid\">\n";
 		while ($getgameaccessname->fetch()) {
-			print "<option value=\"$allowedgameid\">$allowgamename</option><br>\n";
+			print "<option value=\"$allowedgameid\">$allowedgamename</option><br>\n";
 		}
+		print "</select>\n";
+		print "<input type=\"hidden\" name=\"cookie\" value=\"set\">\n";
+		print "<input type=\"submit\" value=\"Select Game\">\n";
 	}
 }
 	
