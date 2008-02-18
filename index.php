@@ -12,7 +12,7 @@ if ($cookie == 'set' && $pcid) {
 }
 
 if ($cookie == 'set' && $gameid) {
-	scookie('pcid',$gameid);
+	scookie('gameid',$gameid);
 }
 
 print "Hello $username to the Downtime Manager!<br><br><br>\n";
@@ -66,8 +66,11 @@ if ($_COOKIE['pcid'] && !$_COOKIE['gameid']) {
 		print "<input type=\"submit\" value=\"Select Game\">\n";
 	}
 }
-	
-/* TODO
+
+if ($_COOKIE['gameid']) {
+	$cookiegameid = $_COOKIE['gameid']
+}
+	/* TODO
 * Find games players are in and set cookie
 * Show summary of downtime logs open and closed in nice chart
 */
